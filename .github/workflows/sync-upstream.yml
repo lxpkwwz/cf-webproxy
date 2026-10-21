@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: '0 */6 * * *'  # 每 6 小时自动检查一次上游更新
 
+permissions:
+  contents: write  # 允许 GITHUB_TOKEN push 回仓库（schedule 触发时默认只读）
+
 jobs:
   sync:
     runs-on: ubuntu-latest
