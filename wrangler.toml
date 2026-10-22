@@ -1,6 +1,6 @@
 name = "cf-webproxy"
 account_id = "8c8d1c3ee75d05db1f749c90faf7337f"
-main = "src/index.js"
+main = "worker.js"
 compatibility_date = "2026-09-18"
 workers_dev = true
 

@@ -27,10 +27,15 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # 同步上游所有文件，但保留我们自己的：
-          #   - .github/       (fork 的 workflow 配置)
-          #   - wrangler.toml  (包含我们的 Cloudflare account_id)
-          git checkout upstream/main -- . ':!.github' ':!wrangler.toml'
+          # 备份 fork 专属文件：.github/ 与 wrangler.toml（含 Cloudflare account_id）
+          cp wrangler.toml /tmp/fork-wrangler.toml
+          rm -rf /tmp/fork-github && cp -r .github /tmp/fork-github
+          # 清空后完整镜像上游，这样上游删除的文件也会被同步删掉
+          git rm -r -q .
+          git checkout upstream/main -- .
+          # 恢复 fork 专属文件
+          cp /tmp/fork-wrangler.toml wrangler.toml
+          rm -rf .github && cp -r /tmp/fork-github .github
           git add -A
           if ! git diff --cached --quiet; then
             git commit -m "sync: update from upstream coldboy404/cf-webproxy"
